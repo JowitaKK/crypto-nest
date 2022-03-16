@@ -82,9 +82,9 @@ export class UsersService {
     return {
       _id: user._id.toHexString(),
       email: user.email,
-      isAuthorized: !!user.coinbaseAuth
+      isCoinAuthorized: !!user.coinbaseAuth
     };
   }
 }
 
-//for buildRespond (left side from User.ts / right from userResponse)
+//for buildRespond (left side from userResponse / right from User)

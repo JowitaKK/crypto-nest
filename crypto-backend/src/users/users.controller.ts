@@ -1,24 +1,24 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateUserRequest } from './dto/request/createUserRequest.dto';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { CurrentUser } from '../auth/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UserResponse } from './dto/response/userResponse.dot';
+import { CreateUserRequest } from './dto/request/create-user-request.dto';
+import { UserResponse } from './dto/response/user-response.dto';
 import { UsersService } from './users.service';
-// to create this file use: nest g modue users, nest g controller users, nest g service users
+
 @Controller('users')
 export class UsersController {
-     constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-     @Post()
-     async createUser(
-          @Body() createUserRequest: CreateUserRequest: CreateUserRequest,
-     ): Promise<UserResponse> {
-          return this.usersService.createUser(createUserRequest);
+  @Post()
+  async createUser(
+    @Body() createUserRequest: CreateUserRequest,
+  ): Promise<UserResponse> {
+    return this.usersService.createUser(createUserRequest);
+  }
 
-     }
-
-     @Get()
-     @UserGuards(JwtAuthGuard)
-     async getUser(@CurrentUser() user: UserResponse): Promise<UserResponse> {
-          return user;
-     }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getUser(@CurrentUser() user: UserResponse): Promise<UserResponse> {
+    return user;
+  }
 }
