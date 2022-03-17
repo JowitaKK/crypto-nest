@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+
+    },
+    "include": [],
+    "references": [
+        {"path": "./crypto-backend"},
+        {"path": "./crypto-frontend"},
+    ]
+}
