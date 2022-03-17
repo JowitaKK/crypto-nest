@@ -1,16 +1,27 @@
 import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
+import { useLoginMutation } from "../../../apis/auth.api";
+import { useCreateUserMutation } from "../../../apis/users.api";
+import { useAppDispatch } from "../../../app/hooks";
+import { setAuthState } from "../../../slices/auth.slice";
+import { User } from "../../../models/User";
 
 const SignupForm =() => {
 
+  const [createUser] = useCreateUserMutation();
+  const [login] = useLoginMutation();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  
   const [email, setEmail] = useState('');
   const [emailError, setEmailError]= useState(false);
 
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!email) {
       setEmailError(true);
     } else {
@@ -20,6 +31,14 @@ const SignupForm =() => {
       setPasswordError(true);
     } else {
       setPasswordError(false);
+    }
+    try {
+      await createUser({email, password});
+      const response = (await login({email, password})) as {data: User};
+      dispatch(setAuthState({ user: response.data}));
+      navigate('/');
+    } catch (err) {
+      console.error(err);
     }
   };
 
