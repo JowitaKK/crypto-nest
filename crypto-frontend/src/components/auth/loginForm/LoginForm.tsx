@@ -1,8 +1,17 @@
 import { Button, TextField } from '@mui/material';
 import { useState } from 'react';
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router';
+import { useAppDispatch } from '../../app/hooks';
+import { useLoginMutation } from '../../../apis/auth.api';
+import { User } from '../../../models/User';
+
 
 const LoginForm =() => {
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [login] = useLoginMutation();
 
   const [email, setEmail] = useState('');
   const [emailError, setEmailError]= useState(false);
@@ -10,7 +19,7 @@ const LoginForm =() => {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email) {
       setEmailError(true);
     } else {
@@ -21,7 +30,15 @@ const LoginForm =() => {
     } else {
       setPasswordError(false);
     }
-  }
+    try {
+      const response = (await login({ email, password })) as { data: User };
+      dispatch(setAuthState({ user: response.data }));
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
   return (
     <div className='flex flex-col justify-center items-center h-screen gap-8'>
         <h1>LOGIN</h1>
